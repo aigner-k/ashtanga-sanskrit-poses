@@ -2,8 +2,17 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Ashtanga Sanskrit Poses — Lernspiel</title>
+  <meta name="description" content="Lerne die Sanskrit-Namen der Ashtanga-Yoga Primary Series mit Aussprache, Übersetzung und Piktogramm.">
+  <meta name="theme-color" content="#b5652f">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Sanskrit Poses">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -18,6 +27,12 @@
       <button data-mode="exam-setup">Prüfung</button>
     </nav>
   </header>
+
+  <div id="install-banner" class="install-banner" hidden>
+    <span id="install-banner-text"></span>
+    <button id="install-banner-action" type="button"></button>
+    <button id="install-banner-close" type="button" aria-label="Schließen">✕</button>
+  </div>
 
   <main id="app"></main>
 

@@ -451,6 +451,37 @@ select, input[type=number] {
   flex-wrap: wrap;
 }
 
+.install-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--accent-soft);
+  color: var(--ink);
+  padding: 10px 16px;
+  font-size: 0.85rem;
+  border-bottom: 1px solid var(--border);
+}
+.install-banner span { flex: 1; }
+.install-banner button#install-banner-action {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.install-banner button#install-banner-close {
+  background: transparent;
+  border: none;
+  color: var(--ink-soft);
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 4px;
+}
+
 footer.foot {
   text-align: center;
   color: var(--ink-soft);

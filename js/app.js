@@ -383,3 +383,59 @@ function renderExamResults() {
 // ---------------------------------------------------------------- Init
 document.querySelectorAll('nav.modes button').forEach(b => b.onclick = () => setMode(b.dataset.mode));
 render();
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js').catch(() => {});
+  });
+}
+
+// ---------------------------------------------------------------- Install banner (PWA)
+const INSTALL_DISMISS_KEY = 'ashtanga-install-dismissed';
+let deferredInstallPrompt = null;
+const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+
+function dismissInstallBanner() {
+  document.getElementById('install-banner').hidden = true;
+  try { localStorage.setItem(INSTALL_DISMISS_KEY, '1'); } catch (e) {}
+}
+
+function showInstallBanner({ text, actionLabel, onAction }) {
+  if (isStandalone) return;
+  try { if (localStorage.getItem(INSTALL_DISMISS_KEY)) return; } catch (e) {}
+  const banner = document.getElementById('install-banner');
+  document.getElementById('install-banner-text').textContent = text;
+  const actionBtn = document.getElementById('install-banner-action');
+  if (actionLabel && onAction) {
+    actionBtn.textContent = actionLabel;
+    actionBtn.hidden = false;
+    actionBtn.onclick = onAction;
+  } else {
+    actionBtn.hidden = true;
+  }
+  banner.hidden = false;
+}
+
+document.getElementById('install-banner-close').onclick = dismissInstallBanner;
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  showInstallBanner({
+    text: '📲 Als App installieren für den schnellen Zugriff vom Homescreen.',
+    actionLabel: 'Installieren',
+    onAction: async () => {
+      dismissInstallBanner();
+      deferredInstallPrompt.prompt();
+      await deferredInstallPrompt.userChoice;
+      deferredInstallPrompt = null;
+    },
+  });
+});
+
+window.addEventListener('appinstalled', dismissInstallBanner);
+
+if (isIOS && !isStandalone) {
+  showInstallBanner({ text: '📲 Zum Homescreen hinzufügen: Teilen-Symbol ⬆️ antippen, dann „Zum Home-Bildschirm“.' });
+}
