@@ -1,0 +1,79 @@
+// Ashtanga Yoga Primary Series (Yoga Chikitsa) — Pose database
+// Jede Pose: sanskrit, Aussprache (phonetisch, GROSS = betonte Silbe),
+// englischer & deutscher Titel, Abschnitt der Serie, Kategorie (für Filter),
+// shape (Schlüssel für das SVG-Piktogramm), quizVisual (ob als Bild-Rätsel geeignet)
+
+const POSES = [
+  // ---------- VINYASA & ÜBERGÄNGE ----------
+  { id: 'samasthiti', sanskrit: 'Samasthiti (Tadasana)', pronunciation: 'sa-mas-THEE-tee (tah-DAH-sana)', english: 'Mountain Pose / Equal Standing', german: 'Berghaltung (Grundstellung)', section: 'Vinyasa & Übergänge', category: 'vinyasa', shape: 'standing', quizVisual: true },
+  { id: 'surya-a', sanskrit: 'Surya Namaskara A', pronunciation: 'SOOR-yah na-mas-KAH-rah', english: 'Sun Salutation A', german: 'Sonnengruß A', section: 'Vinyasa & Übergänge', category: 'vinyasa', shape: 'sequence', quizVisual: false, note: 'Fließende Abfolge aus 9 Positionen, kein Einzel-Asana.' },
+  { id: 'surya-b', sanskrit: 'Surya Namaskara B', pronunciation: 'SOOR-yah na-mas-KAH-rah', english: 'Sun Salutation B', german: 'Sonnengruß B', section: 'Vinyasa & Übergänge', category: 'vinyasa', shape: 'sequence', quizVisual: false, note: 'Fließende Abfolge aus 17 Positionen, kein Einzel-Asana.' },
+  { id: 'chaturanga', sanskrit: 'Chaturanga Dandasana', pronunciation: 'chah-too-RAHN-gah dan-DAH-sana', english: 'Four-Limbed Staff Pose', german: 'Vierfüßlerstab (Unterarmstütz)', section: 'Vinyasa & Übergänge', category: 'vinyasa', shape: 'plank', quizVisual: true },
+  { id: 'urdhva-mukha-svanasana', sanskrit: 'Urdhva Mukha Svanasana', pronunciation: 'OORD-vah MOO-kah shvah-NAH-sana', english: 'Upward-Facing Dog', german: 'Nach oben schauender Hund', section: 'Vinyasa & Übergänge', category: 'vinyasa', shape: 'upDog', quizVisual: true },
+  { id: 'adho-mukha-svanasana', sanskrit: 'Adho Mukha Svanasana', pronunciation: 'AH-doh MOO-kah shvah-NAH-sana', english: 'Downward-Facing Dog', german: 'Nach unten schauender Hund', section: 'Vinyasa & Übergänge', category: 'vinyasa', shape: 'downDog', quizVisual: true },
+
+  // ---------- STEHENDE SERIE ----------
+  { id: 'padangusthasana', sanskrit: 'Padangusthasana', pronunciation: 'pah-dahn-goosh-TAH-sana', english: 'Big Toe Pose', german: 'Großzehenhaltung', section: 'Stehende Serie', category: 'standing', shape: 'forwardBendStanding', quizVisual: true },
+  { id: 'pada-hastasana', sanskrit: 'Pada Hastasana', pronunciation: 'PAH-dah hahs-TAH-sana', english: 'Hand Under Foot Pose', german: 'Hand-unter-Fuß-Haltung', section: 'Stehende Serie', category: 'standing', shape: 'forwardBendStanding', quizVisual: true },
+  { id: 'utthita-trikonasana', sanskrit: 'Utthita Trikonasana', pronunciation: 'oo-TEE-tah tree-koh-NAH-sana', english: 'Extended Triangle Pose', german: 'Ausgestrecktes Dreieck', section: 'Stehende Serie', category: 'standing', shape: 'triangleSide', quizVisual: true },
+  { id: 'parivrtta-trikonasana', sanskrit: 'Parivrtta Trikonasana', pronunciation: 'pah-ree-VRIT-tah tree-koh-NAH-sana', english: 'Revolved Triangle Pose', german: 'Gedrehtes Dreieck', section: 'Stehende Serie', category: 'standing', shape: 'triangleSide', quizVisual: true },
+  { id: 'utthita-parsvakonasana', sanskrit: 'Utthita Parsvakonasana', pronunciation: 'oo-TEE-tah pars-vah-koh-NAH-sana', english: 'Extended Side Angle Pose', german: 'Ausgestreckter seitlicher Winkel', section: 'Stehende Serie', category: 'standing', shape: 'sideAngle', quizVisual: true },
+  { id: 'parivrtta-parsvakonasana', sanskrit: 'Parivrtta Parsvakonasana', pronunciation: 'pah-ree-VRIT-tah pars-vah-koh-NAH-sana', english: 'Revolved Side Angle Pose', german: 'Gedrehter seitlicher Winkel', section: 'Stehende Serie', category: 'standing', shape: 'sideAngle', quizVisual: true },
+  { id: 'prasarita-padottanasana', sanskrit: 'Prasarita Padottanasana', pronunciation: 'prah-sah-REE-tah pah-doh-tah-NAH-sana', english: 'Wide-Legged Forward Bend', german: 'Weitbeinige stehende Vorbeuge', section: 'Stehende Serie', category: 'standing', shape: 'forwardBendWideLegs', quizVisual: true },
+  { id: 'parsvottanasana', sanskrit: 'Parsvottanasana', pronunciation: 'pars-voh-tah-NAH-sana', english: 'Intense Side Stretch Pose', german: 'Intensive Seitdehnung', section: 'Stehende Serie', category: 'standing', shape: 'lungeTwistStanding', quizVisual: true },
+  { id: 'utthita-hasta-padangusthasana', sanskrit: 'Utthita Hasta Padangusthasana', pronunciation: 'oo-TEE-tah HAHS-tah pah-dahn-goosh-TAH-sana', english: 'Extended Hand-to-Big-Toe Pose', german: 'Ausgestrecktes Hand-zu-Fuß', section: 'Stehende Serie', category: 'standing', shape: 'balanceLegExtended', quizVisual: true },
+  { id: 'ardha-baddha-padmottanasana', sanskrit: 'Ardha Baddha Padmottanasana', pronunciation: 'AR-dah BAH-dah pad-moh-tah-NAH-sana', english: 'Half Bound Lotus Forward Bend', german: 'Halber gebundener Lotus mit Vorbeuge', section: 'Stehende Serie', category: 'standing', shape: 'halfLotusForwardBendStanding', quizVisual: true },
+  { id: 'utkatasana', sanskrit: 'Utkatasana', pronunciation: 'oot-kah-TAH-sana', english: 'Chair Pose', german: 'Stuhlhaltung', section: 'Stehende Serie', category: 'standing', shape: 'chair', quizVisual: true },
+  { id: 'virabhadrasana-a', sanskrit: 'Virabhadrasana A', pronunciation: 'vee-rah-bah-DRAH-sana', english: 'Warrior I', german: 'Krieger I', section: 'Stehende Serie', category: 'standing', shape: 'warrior1', quizVisual: true },
+  { id: 'virabhadrasana-b', sanskrit: 'Virabhadrasana B', pronunciation: 'vee-rah-bah-DRAH-sana', english: 'Warrior II', german: 'Krieger II', section: 'Stehende Serie', category: 'standing', shape: 'warrior2', quizVisual: true },
+
+  // ---------- SITZENDE SERIE ----------
+  { id: 'dandasana', sanskrit: 'Dandasana', pronunciation: 'dan-DAH-sana', english: 'Staff Pose', german: 'Stabhaltung', section: 'Sitzende Serie', category: 'seated', shape: 'staffSeated', quizVisual: true },
+  { id: 'paschimottanasana', sanskrit: 'Paschimottanasana', pronunciation: 'pash-chee-moh-tah-NAH-sana', english: 'Seated Forward Bend', german: 'Sitzende Vorbeuge (Zangenstellung)', section: 'Sitzende Serie', category: 'seated', shape: 'seatedForwardBend', quizVisual: true },
+  { id: 'purvottanasana', sanskrit: 'Purvottanasana', pronunciation: 'poor-voh-tah-NAH-sana', english: 'Upward Plank Pose', german: 'Aufwärtsgerichtete Bank', section: 'Sitzende Serie', category: 'seated', shape: 'upwardPlankSeated', quizVisual: true },
+  { id: 'ardha-baddha-padma-paschimottanasana', sanskrit: 'Ardha Baddha Padma Paschimottanasana', pronunciation: 'AR-dah BAH-dah PAD-mah pash-chee-moh-tah-NAH-sana', english: 'Half Bound Lotus Seated Forward Bend', german: 'Halber gebundener Lotus, sitzende Vorbeuge', section: 'Sitzende Serie', category: 'seated', shape: 'seatedForwardBend', quizVisual: true },
+  { id: 'trianga-mukhaikapada-paschimottanasana', sanskrit: 'Trianga Mukhaikapada Paschimottanasana', pronunciation: 'tree-AHN-gah moo-KAI-kah-PAH-dah pash-chee-moh-tah-NAH-sana', english: 'Three-Limbed Forward Bend', german: 'Dreigliedrige Vorbeuge', section: 'Sitzende Serie', category: 'seated', shape: 'seatedForwardBend', quizVisual: true },
+  { id: 'janu-sirsasana', sanskrit: 'Janu Sirsasana', pronunciation: 'JAH-noo shir-SHAH-sana', english: 'Head-to-Knee Pose', german: 'Kopf-zu-Knie-Haltung', section: 'Sitzende Serie', category: 'seated', shape: 'seatedForwardBend', quizVisual: true },
+  { id: 'marichyasana', sanskrit: 'Marichyasana', pronunciation: 'mah-ree-chee-AH-sana', english: "Marichi's Pose", german: 'Marichis Haltung', section: 'Sitzende Serie', category: 'seated', shape: 'marichiTwist', quizVisual: true },
+  { id: 'navasana', sanskrit: 'Navasana', pronunciation: 'nah-VAH-sana', english: 'Boat Pose', german: 'Boot', section: 'Sitzende Serie', category: 'seated', shape: 'boat', quizVisual: true },
+  { id: 'bhujapidasana', sanskrit: 'Bhujapidasana', pronunciation: 'boo-jah-pee-DAH-sana', english: 'Shoulder-Pressing Pose', german: 'Schulterdruckhaltung', section: 'Sitzende Serie', category: 'seated', shape: 'shoulderPress', quizVisual: true },
+  { id: 'kurmasana', sanskrit: 'Kurmasana', pronunciation: 'koor-MAH-sana', english: 'Tortoise Pose', german: 'Schildkröte', section: 'Sitzende Serie', category: 'seated', shape: 'tortoise', quizVisual: true },
+  { id: 'supta-kurmasana', sanskrit: 'Supta Kurmasana', pronunciation: 'SOOP-tah koor-MAH-sana', english: 'Sleeping Tortoise Pose', german: 'Schlafende Schildkröte', section: 'Sitzende Serie', category: 'seated', shape: 'sleepingTortoise', quizVisual: true },
+  { id: 'garbha-pindasana', sanskrit: 'Garbha Pindasana', pronunciation: 'GAR-bah peen-DAH-sana', english: 'Embryo in the Womb Pose', german: 'Embryo im Mutterleib', section: 'Sitzende Serie', category: 'seated', shape: 'embryo', quizVisual: true },
+  { id: 'kukkutasana', sanskrit: 'Kukkutasana', pronunciation: 'koo-koo-TAH-sana', english: 'Rooster Pose', german: 'Hahn', section: 'Sitzende Serie', category: 'seated', shape: 'rooster', quizVisual: true },
+  { id: 'baddha-konasana', sanskrit: 'Baddha Konasana', pronunciation: 'BAH-dah koh-NAH-sana', english: 'Bound Angle Pose', german: 'Gebundener Winkel (Schmetterling)', section: 'Sitzende Serie', category: 'seated', shape: 'boundAngle', quizVisual: true },
+  { id: 'upavistha-konasana', sanskrit: 'Upavistha Konasana', pronunciation: 'oo-pah-VEESH-tah koh-NAH-sana', english: 'Wide-Angle Seated Forward Bend', german: 'Weiter Winkel sitzend', section: 'Sitzende Serie', category: 'seated', shape: 'wideAngleForwardBend', quizVisual: true },
+  { id: 'supta-konasana', sanskrit: 'Supta Konasana', pronunciation: 'SOOP-tah koh-NAH-sana', english: 'Reclining Angle Pose', german: 'Liegender Winkel', section: 'Sitzende Serie', category: 'seated', shape: 'legsOverheadWide', quizVisual: true },
+  { id: 'supta-padangusthasana', sanskrit: 'Supta Padangusthasana', pronunciation: 'SOOP-tah pah-dahn-goosh-TAH-sana', english: 'Reclining Big Toe Pose', german: 'Liegende Großzehenhaltung', section: 'Sitzende Serie', category: 'seated', shape: 'supineLegUp', quizVisual: true },
+  { id: 'ubhaya-padangusthasana', sanskrit: 'Ubhaya Padangusthasana', pronunciation: 'oo-BAH-yah pah-dahn-goosh-TAH-sana', english: 'Both Big Toes Pose', german: 'Beide-Großzehen-Haltung', section: 'Sitzende Serie', category: 'seated', shape: 'vShapeBalance', quizVisual: true },
+  { id: 'urdhva-mukha-paschimottanasana', sanskrit: 'Urdhva Mukha Paschimottanasana', pronunciation: 'OORD-vah MOO-kah pash-chee-moh-tah-NAH-sana', english: 'Upward Facing Forward Bend', german: 'Aufwärtsgerichtete Vorbeuge im Sitzen', section: 'Sitzende Serie', category: 'seated', shape: 'vShapeBalance', quizVisual: true },
+
+  // ---------- RÜCKBEUGEN ----------
+  { id: 'setu-bandhasana', sanskrit: 'Setu Bandhasana', pronunciation: 'SEH-too ban-DAH-sana', english: 'Bridge Pose', german: 'Brücke', section: 'Rückbeugen', category: 'backbend', shape: 'bridge', quizVisual: true },
+  { id: 'urdhva-dhanurasana', sanskrit: 'Urdhva Dhanurasana', pronunciation: 'OORD-vah dah-noo-RAH-sana', english: 'Upward Bow / Wheel Pose', german: 'Aufwärtsgerichteter Bogen (Rad)', section: 'Rückbeugen', category: 'backbend', shape: 'wheel', quizVisual: true },
+
+  // ---------- ABSCHLUSS-SERIE ----------
+  { id: 'salamba-sarvangasana', sanskrit: 'Salamba Sarvangasana', pronunciation: 'sah-LAHM-bah sar-vahn-GAH-sana', english: 'Supported Shoulderstand', german: 'Schulterstand', section: 'Abschluss-Serie', category: 'finishing', shape: 'shoulderstand', quizVisual: true },
+  { id: 'halasana', sanskrit: 'Halasana', pronunciation: 'hah-LAH-sana', english: 'Plow Pose', german: 'Pflug', section: 'Abschluss-Serie', category: 'finishing', shape: 'plow', quizVisual: true },
+  { id: 'karnapidasana', sanskrit: 'Karnapidasana', pronunciation: 'kar-nah-pee-DAH-sana', english: 'Ear Pressure Pose', german: 'Ohrendruckhaltung', section: 'Abschluss-Serie', category: 'finishing', shape: 'earPress', quizVisual: true },
+  { id: 'urdhva-padmasana', sanskrit: 'Urdhva Padmasana', pronunciation: 'OORD-vah pad-MAH-sana', english: 'Upward Lotus Pose', german: 'Aufwärtsgerichteter Lotus', section: 'Abschluss-Serie', category: 'finishing', shape: 'upwardLotusShoulderstand', quizVisual: true },
+  { id: 'pindasana', sanskrit: 'Pindasana', pronunciation: 'peen-DAH-sana', english: 'Embryo Pose', german: 'Embryohaltung (im Schulterstand)', section: 'Abschluss-Serie', category: 'finishing', shape: 'embryo', quizVisual: true },
+  { id: 'matsyasana', sanskrit: 'Matsyasana', pronunciation: 'maht-see-AH-sana', english: 'Fish Pose', german: 'Fisch', section: 'Abschluss-Serie', category: 'finishing', shape: 'fish', quizVisual: true },
+  { id: 'uttana-padasana', sanskrit: 'Uttana Padasana', pronunciation: 'oo-TAH-nah pah-DAH-sana', english: 'Extended Leg Pose', german: 'Gestreckte-Bein-Haltung', section: 'Abschluss-Serie', category: 'finishing', shape: 'fishExtendedLeg', quizVisual: true },
+  { id: 'sirsasana', sanskrit: 'Sirsasana', pronunciation: 'shir-SHAH-sana', english: 'Headstand', german: 'Kopfstand', section: 'Abschluss-Serie', category: 'finishing', shape: 'headstand', quizVisual: true },
+  { id: 'baddha-padmasana', sanskrit: 'Baddha Padmasana', pronunciation: 'BAH-dah pad-MAH-sana', english: 'Bound Lotus Pose', german: 'Gebundener Lotus', section: 'Abschluss-Serie', category: 'finishing', shape: 'lotusSeated', quizVisual: true },
+  { id: 'yoga-mudra', sanskrit: 'Yoga Mudra', pronunciation: 'YOH-gah MOO-drah', english: 'Yoga Seal', german: 'Yoga-Siegel', section: 'Abschluss-Serie', category: 'finishing', shape: 'lotusForwardFold', quizVisual: true },
+  { id: 'padmasana', sanskrit: 'Padmasana', pronunciation: 'pad-MAH-sana', english: 'Lotus Pose', german: 'Lotussitz', section: 'Abschluss-Serie', category: 'finishing', shape: 'lotusSeated', quizVisual: true },
+  { id: 'uth-pluthih', sanskrit: 'Uth Pluthih (Tolasana)', pronunciation: 'oot PLOO-tee (toh-LAH-sana)', english: 'Scale Pose', german: 'Waage (schwebender Lotus)', section: 'Abschluss-Serie', category: 'finishing', shape: 'lotusLifted', quizVisual: true },
+  { id: 'savasana', sanskrit: 'Savasana', pronunciation: 'shah-VAH-sana', english: 'Corpse Pose', german: 'Totenstellung (Tiefenentspannung)', section: 'Abschluss-Serie', category: 'finishing', shape: 'corpse', quizVisual: true },
+];
+
+const SECTIONS = [...new Set(POSES.map(p => p.section))];
+const CATEGORIES = [
+  { id: 'all', label: 'Alle' },
+  { id: 'vinyasa', label: 'Vinyasa' },
+  { id: 'standing', label: 'Stehend' },
+  { id: 'seated', label: 'Sitzend' },
+  { id: 'backbend', label: 'Rückbeuge' },
+  { id: 'finishing', label: 'Abschluss' },
+];
