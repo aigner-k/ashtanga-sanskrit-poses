@@ -47,6 +47,23 @@ function speak(text) {
   } catch (e) {}
 }
 
+// Ein Pose-Eintrag kann optional ein echtes Foto tragen:
+//   image: 'images/matsyasana.jpg'
+//   imageCredit: { author: 'Nina Mel', license: 'CC BY 3.0', url: 'https://commons.wikimedia.org/wiki/File:...' }
+// Ist kein Foto hinterlegt, wird automatisch auf das SVG-Piktogramm zurückgefallen.
+// Für den Prüfungsmodus wird bewusst NIE ein Foto verwendet (siehe renderShape-Aufrufe dort) —
+// bei vier Antwortmöglichkeiten würde ein einzelnes Foto zwischen drei Piktogrammen die Lösung verraten.
+function poseVisualParts(pose) {
+  if (pose.image) {
+    const c = pose.imageCredit;
+    const credit = c
+      ? `<div class="photo-credit">📷 ${c.author}${c.license ? ' · ' + c.license : ''}${c.url ? ` · <a href="${c.url}" target="_blank" rel="noopener">Quelle</a>` : ''}</div>`
+      : '';
+    return { figure: `<img src="${pose.image}" alt="${pose.sanskrit}" loading="lazy">`, credit, hasPhoto: true };
+  }
+  return { figure: `<svg viewBox="0 0 100 100">${renderShape(pose.shape)}</svg>`, credit: '', hasPhoto: false };
+}
+
 const root = document.getElementById('app');
 let state = { mode: 'home' };
 
@@ -137,6 +154,7 @@ function renderExplore() {
   if (!list.find(p => p.id === exploreState.selectedId)) exploreState.selectedId = list[0].id;
   const pose = POSES.find(p => p.id === exploreState.selectedId);
   markSeen(pose.id);
+  const visual = poseVisualParts(pose);
 
   let bySection = {};
   list.forEach(p => { (bySection[p.section] = bySection[p.section] || []).push(p); });
@@ -161,7 +179,10 @@ function renderExplore() {
       </div>
       <div class="detail-card">
         <div class="detail-top">
-          <div class="pose-figure"><svg viewBox="0 0 100 100">${renderShape(pose.shape)}</svg></div>
+          <div class="figure-col">
+            <div class="pose-figure ${visual.hasPhoto ? 'has-photo' : ''}">${visual.figure}</div>
+            ${visual.credit}
+          </div>
           <div class="pose-info">
             <span class="tag">${pose.section}</span>
             <h2>${pose.sanskrit}</h2>
@@ -219,9 +240,11 @@ function canRateCard() {
 }
 
 function cardFaceContent(pose) {
+  const v = poseVisualParts(pose);
   return `
     <span class="tag">${pose.section}</span>
-    <div class="card-figure"><svg viewBox="0 0 100 100">${renderShape(pose.shape)}</svg></div>
+    <div class="card-figure ${v.hasPhoto ? 'has-photo' : ''}">${v.figure}</div>
+    ${v.credit}
     <div class="card-name">${pose.sanskrit}</div>
     <div class="card-pron">${pose.pronunciation}</div>
     <div class="card-titles">
@@ -232,11 +255,13 @@ function cardFaceContent(pose) {
 }
 
 function flipCardContent(pose) {
+  const v = poseVisualParts(pose);
   return `
     <div class="flip-card-inner">
       <div class="flip-face front">
         <span class="tag">${pose.section}</span>
-        <div class="card-figure"><svg viewBox="0 0 100 100">${renderShape(pose.shape)}</svg></div>
+        <div class="card-figure ${v.hasPhoto ? 'has-photo' : ''}">${v.figure}</div>
+        ${v.credit}
         <div class="card-titles">
           <div class="title-box"><div class="lbl">Englisch</div><div class="val">${pose.english}</div></div>
           <div class="title-box"><div class="lbl">Deutsch</div><div class="val">${pose.german}</div></div>

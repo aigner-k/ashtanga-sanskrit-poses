@@ -241,6 +241,32 @@ main {
 .pose-figure svg .ground { stroke: var(--ink-soft); stroke-width: 2; opacity: 0.4; }
 .pose-figure svg .dash { stroke: currentColor; stroke-width: 3; stroke-dasharray: 4 3; }
 
+.figure-col {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.pose-figure.has-photo, .card-figure.has-photo {
+  padding: 0;
+  overflow: hidden;
+}
+.pose-figure img, .card-figure img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 14px;
+  display: block;
+}
+.photo-credit {
+  font-size: 0.65rem;
+  color: var(--ink-soft);
+  text-align: center;
+  line-height: 1.3;
+  max-width: 180px;
+}
+.photo-credit a { color: var(--ink-soft); }
+
 .pose-info { flex: 1; min-width: 220px; }
 .pose-info .tag {
   display: inline-block;

@@ -38,7 +38,19 @@ Die Seite ist eine installierbare Progressive Web App: Läuft auf dem Handy im B
 
 ## Eigene Fotos statt Piktogramme
 
-Die Piktogramme in `js/figures.js` sind bewusst einfache, generische Strichfiguren. Wer echte Fotos oder Illustrationen ergänzen möchte, kann in `js/data.js` pro Pose ein Feld `image: 'pfad/zum/bild.jpg'` hinzufügen und in `js/app.js` (Funktion `renderExplore`/`renderExamRun`) `<img src="${pose.image}">` anstelle des SVG rendern, falls `pose.image` gesetzt ist.
+Die Piktogramme in `js/figures.js` sind bewusst einfache, generische Strichfiguren. Echte Fotos lassen sich pro Pose in `js/data.js` ergänzen — dafür gibt es bereits eine fertige Anbindung:
+
+```js
+{ id: 'matsyasana', ..., 
+  image: 'images/matsyasana.jpg',
+  imageCredit: { author: 'Nina Mel', license: 'CC BY 3.0', url: 'https://commons.wikimedia.org/wiki/File:Matsyasana_Yoga-Asana_Nina-Mel.jpg' } }
+```
+
+Ist `image` gesetzt, wird es in Explore-, Shuffle- und Erraten-Modus automatisch anstelle des Piktogramms angezeigt, inklusive kleiner Bildunterschrift aus `imageCredit` (Autor · Lizenz · Link zur Quelle). Ohne `image` fällt die Pose weiterhin auf ihr SVG-Piktogramm zurück — beide können also gemischt im selben Pool stehen, während Fotos nach und nach ergänzt werden.
+
+Der **Prüfungsmodus zeigt bewusst nie ein Foto**, auch wenn eines hinterlegt ist: Bei vier Antwortoptionen würde ein einzelnes Foto zwischen drei Piktogrammen die richtige Antwort verraten. Dort bleibt es konsistent bei `renderShape(pose.shape)`.
+
+**Bilder nur mit geklärten Rechten einbinden** — z. B. gemeinfreie Werke oder Creative-Commons-lizenzierte Fotos (mit Namensnennung gemäß Lizenz, wie oben im `imageCredit`-Feld). Bilddateien selbst gehören nach `images/` (lokal ablegen statt extern verlinken), damit die App nicht von der Verfügbarkeit fremder Server abhängt.
 
 ## Dateien
 
