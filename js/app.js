@@ -59,9 +59,21 @@ function poseVisualParts(pose) {
     const credit = c
       ? `<div class="photo-credit">📷 ${c.author}${c.license ? ' · ' + c.license : ''}${c.url ? ` · <a href="${c.url}" target="_blank" rel="noopener">Quelle</a>` : ''}</div>`
       : '';
-    return { figure: `<img src="${pose.image}" alt="${pose.sanskrit}" loading="lazy">`, credit, hasPhoto: true };
+    return { figure: `<img src="${pose.image}" alt="${pose.sanskrit}" loading="lazy" onerror="handleImgError(this,'${pose.id}')">`, credit, hasPhoto: true };
   }
   return { figure: `<svg viewBox="0 0 100 100">${renderShape(pose.shape)}</svg>`, credit: '', hasPhoto: false };
+}
+
+// Fällt automatisch auf das Piktogramm zurück, falls ein Foto-Link mal nicht lädt
+// (totes Bild, Netzwerkproblem) — verhindert kaputte Bild-Icons in der App.
+function handleImgError(imgEl, poseId) {
+  const pose = POSES.find(p => p.id === poseId);
+  if (!pose) return;
+  const container = imgEl.parentElement;
+  if (container) container.classList.remove('has-photo');
+  imgEl.outerHTML = `<svg viewBox="0 0 100 100">${renderShape(pose.shape)}</svg>`;
+  const creditEl = container && container.nextElementSibling;
+  if (creditEl && creditEl.classList && creditEl.classList.contains('photo-credit')) creditEl.remove();
 }
 
 const root = document.getElementById('app');
