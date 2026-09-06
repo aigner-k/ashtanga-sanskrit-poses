@@ -2,7 +2,7 @@
 
 Ein kleines Browser-Lernspiel, um die Sanskrit-Namen der Ashtanga-Yoga Primary Series (Yoga Chikitsa) spielerisch zu lernen.
 
-Zu jeder der 53 Posen gibt es:
+Zu jeder der 56 Posen gibt es:
 - den **Sanskrit-Namen**
 - eine **Ausspracheführung** (phonetisch, plus 🔊-Button zum Anhören per Sprachsynthese des Browsers)
 - den **englischen** und **deutschen** Titel
