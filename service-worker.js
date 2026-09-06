@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ashtanga-poses-v2';
+const CACHE_NAME = 'ashtanga-poses-v3';
 const APP_SHELL = [
   './',
   './index.html',
