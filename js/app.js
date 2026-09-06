@@ -52,9 +52,13 @@ let state = { mode: 'home' };
 
 // ---------------------------------------------------------------- Router
 function setMode(mode) {
-  state = { mode };
   document.querySelectorAll('nav.modes button').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
-  render();
+  if (mode === 'shuffle' || mode === 'guess') {
+    startCardSession(mode, cardFilter);
+  } else {
+    state = { mode };
+    render();
+  }
 }
 
 function render() {
@@ -63,6 +67,8 @@ function render() {
   else if (state.mode === 'exam-setup') renderExamSetup();
   else if (state.mode === 'exam-run') renderExamRun();
   else if (state.mode === 'exam-results') renderExamResults();
+  else if (state.mode === 'shuffle' || state.mode === 'guess') renderCardMode();
+  else if (state.mode === 'card-summary') renderCardSummary();
 }
 
 // ---------------------------------------------------------------- Home
@@ -90,10 +96,20 @@ function renderHome() {
         <h3>Explore-Modus</h3>
         <p>Alle ${total} Posen in Ruhe durchblättern, anhören und die Details lernen — ganz ohne Zeitdruck.</p>
       </div>
+      <div class="mode-card" id="card-shuffle">
+        <div class="icon">🔀</div>
+        <h3>Shuffle-Modus</h3>
+        <p>Gemischte Lernkärtchen im Tinder-Stil: nach rechts wischen für „kenn ich“, nach links für „noch üben“.</p>
+      </div>
+      <div class="mode-card" id="card-guess">
+        <div class="icon">👆</div>
+        <h3>Erraten-Modus</h3>
+        <p>Bild &amp; Übersetzung sehen, den Sanskrit-Namen im Kopf raten, dann antippen zum Aufdecken.</p>
+      </div>
       <div class="mode-card" id="card-exam">
         <div class="icon">📝</div>
         <h3>Prüfungsmodus</h3>
-        <p>Teste dein Wissen mit Multiple-Choice-Fragen zu Bild, Name und Übersetzung. Schwache Posen kommen häufiger dran.</p>
+        <p>Multiple-Choice-Fragen zu Bild, Name und Übersetzung. Schwache Posen kommen häufiger dran.</p>
       </div>
     </div>
     <div class="progress-overview">
@@ -103,6 +119,8 @@ function renderHome() {
     </div>
   `;
   document.getElementById('card-explore').onclick = () => setMode('explore');
+  document.getElementById('card-shuffle').onclick = () => setMode('shuffle');
+  document.getElementById('card-guess').onclick = () => setMode('guess');
   document.getElementById('card-exam').onclick = () => setMode('exam-setup');
 }
 
@@ -178,6 +196,215 @@ function renderExplore() {
     const idx = list.findIndex(p => p.id === pose.id);
     exploreState.selectedId = list[(idx + 1) % list.length].id;
     renderExplore();
+  };
+}
+
+// ---------------------------------------------------------------- Shuffle- & Erraten-Modus (Karten)
+let cardFilter = 'all';
+let cardSession = null;
+
+function shuffleArr(arr) { return arr.map(v => [Math.random(), v]).sort((a, b) => a[0] - b[0]).map(v => v[1]); }
+
+function startCardSession(mode, filterId) {
+  cardFilter = filterId || 'all';
+  const pool = cardFilter === 'all' ? POSES : POSES.filter(p => p.category === cardFilter);
+  const usable = pool.length ? pool : POSES;
+  cardSession = { mode, deck: shuffleArr(usable), index: 0, flipped: false, known: [], practice: [], transitioning: false };
+  state = { mode };
+  renderCardMode();
+}
+
+function canRateCard() {
+  return cardSession.mode === 'shuffle' || cardSession.flipped;
+}
+
+function cardFaceContent(pose) {
+  return `
+    <span class="tag">${pose.section}</span>
+    <div class="card-figure"><svg viewBox="0 0 100 100">${renderShape(pose.shape)}</svg></div>
+    <div class="card-name">${pose.sanskrit}</div>
+    <div class="card-pron">${pose.pronunciation}</div>
+    <div class="card-titles">
+      <div class="title-box"><div class="lbl">Englisch</div><div class="val">${pose.english}</div></div>
+      <div class="title-box"><div class="lbl">Deutsch</div><div class="val">${pose.german}</div></div>
+    </div>
+  `;
+}
+
+function flipCardContent(pose) {
+  return `
+    <div class="flip-card-inner">
+      <div class="flip-face front">
+        <span class="tag">${pose.section}</span>
+        <div class="card-figure"><svg viewBox="0 0 100 100">${renderShape(pose.shape)}</svg></div>
+        <div class="card-titles">
+          <div class="title-box"><div class="lbl">Englisch</div><div class="val">${pose.english}</div></div>
+          <div class="title-box"><div class="lbl">Deutsch</div><div class="val">${pose.german}</div></div>
+        </div>
+      </div>
+      <div class="flip-face back">
+        <span class="tag">${pose.section}</span>
+        <div class="card-name">${pose.sanskrit}</div>
+        <div class="card-pron">${pose.pronunciation}</div>
+        <div class="card-titles small">
+          <div class="title-box"><div class="lbl">Englisch</div><div class="val">${pose.english}</div></div>
+          <div class="title-box"><div class="lbl">Deutsch</div><div class="val">${pose.german}</div></div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderCardMode() {
+  if (cardSession.index >= cardSession.deck.length) { renderCardSummary(); return; }
+  const pose = cardSession.deck[cardSession.index];
+  const isGuess = cardSession.mode === 'guess';
+  const title = isGuess ? '👆 Erraten-Modus' : '🔀 Shuffle-Modus';
+  const rateable = canRateCard();
+
+  root.innerHTML = `
+    <div class="card-mode-header">
+      <div class="filter-chips">
+        ${CATEGORIES.map(c => `<button class="chip ${cardFilter === c.id ? 'active' : ''}" data-cat="${c.id}">${c.label}</button>`).join('')}
+      </div>
+      <div class="card-progress">
+        <span>${title} — Karte ${cardSession.index + 1} / ${cardSession.deck.length}</span>
+        <span class="tally"><span class="tally-yes">✓ ${cardSession.known.length}</span> <span class="tally-no">✗ ${cardSession.practice.length}</span></span>
+      </div>
+    </div>
+    <div class="card-stack">
+      <div class="stack-peek"></div>
+      <div class="swipe-card ${isGuess ? 'flip-card' : ''} ${isGuess && cardSession.flipped ? 'flipped' : ''}" id="swipe-card">
+        <div class="stamp stamp-yes">✓ KENN ICH</div>
+        <div class="stamp stamp-no">✗ NOCHMAL</div>
+        ${isGuess ? flipCardContent(pose) : `<div class="card-face">${cardFaceContent(pose)}</div>`}
+      </div>
+    </div>
+    <div class="card-hint">${isGuess && !cardSession.flipped ? 'Tippen, um den Sanskrit-Namen aufzudecken' : 'Wischen: ← noch üben · kenn ich schon →'}</div>
+    <div class="rate-buttons ${rateable ? '' : 'disabled'}">
+      <button id="rate-no" aria-label="Noch nicht">✗</button>
+      <button id="speak-card-btn" aria-label="Aussprache anhören">🔊</button>
+      <button id="rate-yes" aria-label="Kenn ich">✓</button>
+    </div>
+  `;
+
+  document.querySelectorAll('.filter-chips .chip').forEach(b => b.onclick = () => startCardSession(cardSession.mode, b.dataset.cat));
+  document.getElementById('speak-card-btn').onclick = () => speak(pose.sanskrit);
+  document.getElementById('rate-no').onclick = () => { if (canRateCard() && !cardSession.transitioning) triggerCardSwipe(-1); };
+  document.getElementById('rate-yes').onclick = () => { if (canRateCard() && !cardSession.transitioning) triggerCardSwipe(1); };
+
+  const cardEl = document.getElementById('swipe-card');
+  let drag = null;
+
+  function setStampOpacity(dx) {
+    const yes = cardEl.querySelector('.stamp-yes');
+    const no = cardEl.querySelector('.stamp-no');
+    const t = Math.min(Math.abs(dx) / 90, 1);
+    if (dx > 0) { yes.style.opacity = t; no.style.opacity = 0; }
+    else { no.style.opacity = t; yes.style.opacity = 0; }
+  }
+  function resetCard() {
+    cardEl.style.transform = '';
+    cardEl.style.opacity = '';
+    cardEl.querySelectorAll('.stamp').forEach(s => s.style.opacity = 0);
+  }
+
+  cardEl.addEventListener('pointerdown', e => {
+    if (cardSession.transitioning) return;
+    drag = { sx: e.clientX, sy: e.clientY, dx: 0, moved: false };
+    cardEl.setPointerCapture(e.pointerId);
+    cardEl.style.transition = 'none';
+  });
+  cardEl.addEventListener('pointermove', e => {
+    if (!drag) return;
+    drag.dx = e.clientX - drag.sx;
+    const dy = e.clientY - drag.sy;
+    if (Math.abs(drag.dx) > 6 || Math.abs(dy) > 6) drag.moved = true;
+    if (canRateCard()) {
+      cardEl.style.transform = `translate(${drag.dx}px, ${dy * 0.3}px) rotate(${drag.dx / 14}deg)`;
+      setStampOpacity(drag.dx);
+    }
+  });
+  function endDrag() {
+    if (!drag) return;
+    const { dx, moved } = drag;
+    drag = null;
+    cardEl.style.transition = 'transform .3s ease, opacity .3s ease';
+    if (!moved) {
+      if (isGuess && !cardSession.flipped) {
+        cardSession.flipped = true;
+        renderCardMode();
+      } else {
+        resetCard();
+      }
+      return;
+    }
+    if (canRateCard() && Math.abs(dx) > 80) {
+      triggerCardSwipe(dx > 0 ? 1 : -1);
+    } else {
+      resetCard();
+    }
+  }
+  cardEl.addEventListener('pointerup', endDrag);
+  cardEl.addEventListener('pointercancel', () => { drag = null; resetCard(); });
+
+  function triggerCardSwipe(direction) {
+    cardSession.transitioning = true;
+    cardEl.style.transition = 'transform .35s ease, opacity .35s ease';
+    cardEl.style.transform = `translate(${direction * 520}px, -30px) rotate(${direction * 25}deg)`;
+    cardEl.style.opacity = '0';
+    const correct = direction === 1;
+    recordResult(pose.id, correct);
+    if (correct) cardSession.known.push(pose); else cardSession.practice.push(pose);
+    setTimeout(() => {
+      cardSession.index++;
+      cardSession.flipped = false;
+      cardSession.transitioning = false;
+      renderCardMode();
+    }, 260);
+  }
+}
+
+document.addEventListener('keydown', e => {
+  if (!cardSession || !(state.mode === 'shuffle' || state.mode === 'guess')) return;
+  if (cardSession.transitioning || cardSession.index >= cardSession.deck.length) return;
+  const noBtn = document.getElementById('rate-no');
+  const yesBtn = document.getElementById('rate-yes');
+  if (e.key === 'ArrowRight' && canRateCard() && yesBtn) yesBtn.click();
+  else if (e.key === 'ArrowLeft' && canRateCard() && noBtn) noBtn.click();
+  else if (e.key === ' ' && cardSession.mode === 'guess' && !cardSession.flipped) {
+    e.preventDefault();
+    cardSession.flipped = true;
+    renderCardMode();
+  }
+});
+
+function renderCardSummary() {
+  state.mode = 'card-summary';
+  const { known, practice, deck, mode } = cardSession;
+  root.innerHTML = `
+    <div class="results-card">
+      <div class="score">${known.length} / ${deck.length}</div>
+      <div class="score-sub">als „kenn ich“ markiert</div>
+      ${practice.length ? `
+        <div class="review-list">
+          <strong>Zum Wiederholen:</strong>
+          ${practice.map(p => `<div class="review-item"><span>${p.sanskrit}</span><span>${p.german}</span></div>`).join('')}
+        </div>` : '<p>🎉 Alle Karten gewusst!</p>'}
+      <div class="results-actions">
+        <button class="secondary-btn" id="back-home">Zur Startseite</button>
+        ${practice.length ? '<button class="secondary-btn" id="retry-practice">Nur Unsichere wiederholen</button>' : ''}
+        <button class="primary-btn" id="reshuffle">🔀 Neu mischen</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('back-home').onclick = () => setMode('home');
+  document.getElementById('reshuffle').onclick = () => startCardSession(mode, cardFilter);
+  const retryBtn = document.getElementById('retry-practice');
+  if (retryBtn) retryBtn.onclick = () => {
+    cardSession = { mode, deck: shuffleArr(practice), index: 0, flipped: false, known: [], practice: [], transitioning: false };
+    state = { mode };
+    renderCardMode();
   };
 }
 

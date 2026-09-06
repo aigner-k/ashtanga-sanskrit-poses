@@ -11,7 +11,11 @@ Zu jeder der 53 Posen gibt es:
 ## Modi
 
 - **Explore-Modus**: Alle Posen in Ruhe durchblättern, gefiltert nach Serienabschnitt (Vinyasa, Stehend, Sitzend, Rückbeuge, Abschluss).
-- **Prüfungsmodus**: Multiple-Choice-Quiz mit vier Fragetypen (Bild→Name, Name→Bild, Name→Übersetzung, Übersetzung→Name), konfigurierbarer Fragenanzahl und Themenfilter. Posen, die noch nicht sicher sitzen, kommen häufiger dran (Fortschritt wird lokal im Browser gespeichert).
+- **Shuffle-Modus**: Gemischte Lernkärtchen im Tinder-Stil (Hochformat, ein Kärtchen nach dem anderen). Jede Karte zeigt schon alle Infos; nach rechts wischen (oder ✓ tippen) markiert „kenn ich schon“, nach links (oder ✗) „muss ich noch üben“. Funktioniert per Touch-Swipe, Maus-Drag, den ✗/✓-Buttons oder den Pfeiltasten.
+- **Erraten-Modus**: Zeigt Bild + englische/deutsche Übersetzung, der Sanskrit-Name ist verdeckt. Erst im Kopf raten, dann auf die Karte tippen (oder Leertaste) zum Aufdecken — danach genauso nach links/rechts bewerten wie im Shuffle-Modus.
+- **Prüfungsmodus**: Multiple-Choice-Quiz mit vier Fragetypen (Bild→Name, Name→Bild, Name→Übersetzung, Übersetzung→Name), konfigurierbarer Fragenanzahl und Themenfilter.
+
+Shuffle-, Erraten- und Prüfungsmodus lassen sich zusätzlich nach Serienabschnitt filtern. Alle drei speisen denselben Lernfortschritt (`localStorage`): Posen, die noch nicht sicher sitzen, kommen in jedem Modus häufiger dran.
 
 ## Starten
 
